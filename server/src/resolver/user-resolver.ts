@@ -1,6 +1,6 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { ApiResponse } from "../types/api-response-type";
-import { User } from "../entity/user-entity";
+import UserModel, { User } from "../entity/user-entity";
 import { UserDetailsInput } from "../types/user-details-input-type";
 
 @Resolver()
@@ -8,7 +8,7 @@ export class UserResolver {
 
     @Query(() => [User])
     getAllUsers(): Promise<User[]> {
-        return User.find();
+        return UserModel.find().exec();
     }
 
     @Mutation(() => ApiResponse)
@@ -16,7 +16,7 @@ export class UserResolver {
         @Arg("userDetails", () => UserDetailsInput) userDetails: UserDetailsInput 
     ): Promise<ApiResponse> {
 
-        const emailFound = await User.count({ email: userDetails.email }) > 0;
+        const emailFound = await UserModel.countDocuments({ email: userDetails.email }) > 0;
 
         if (emailFound) {
             return {
@@ -26,10 +26,11 @@ export class UserResolver {
         }
 
         try {
-            const user: User = new User();
-            user.email = userDetails.email;
-            user.displayName = userDetails.displayName;
-            user.password = userDetails.password;
+            const user = new UserModel({
+                email: userDetails.email,
+                displayName: userDetails.displayName,
+                password: userDetails.password
+            });
             await user.save();
         }
         catch (err) {

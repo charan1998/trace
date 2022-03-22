@@ -1,28 +1,27 @@
+import { getModelForClass, modelOptions, pre, prop } from "@typegoose/typegoose";
 import { hash } from "bcrypt";
-import { ObjectId } from "mongodb";
 import { Field, ObjectType } from "type-graphql";
-import { BaseEntity, BeforeInsert, Column, Entity, ObjectIdColumn } from "typeorm";
+
+@pre<User>('save', async function() {
+    this.password = await hash(this.password, 10);
+})
 
 @ObjectType()
-@Entity("users")
-export class User extends BaseEntity {
+@modelOptions({ schemaOptions: { collection: "users", timestamps: true } })
+export class User {
 
-    @ObjectIdColumn()
-    _id: ObjectId
-
-    @Field(() => String, {nullable: false})
-    @Column({type: "string", nullable: false, unique: true})
+    @Field(() => String, { nullable: false })
+    @prop({ type: () => String, required: true, unique: true })
     email: string;
 
-    @Field(() => String, {nullable: false})
-    @Column({type: "string", nullable: false})
+    @Field(() => String, { nullable: false })
+    @prop({ type: () => String, required: true })
     displayName: string;
 
-    @Column({type: "string", nullable: false})
+    @prop({ type: () => String, required: true })
     password: string;
-
-    @BeforeInsert()
-    async beforeInsert() {
-        this.password = await hash(this.password, 10);
-    }
 }
+
+const UserModel = getModelForClass(User);
+
+export default UserModel;
