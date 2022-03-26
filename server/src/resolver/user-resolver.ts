@@ -1,7 +1,7 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
-import { ApiResponse } from "../types/api-response-type";
+import { ApiResponse } from "../types/output-types/api-response";
 import UserModel, { User } from "../entity/user-entity";
-import { UserDetailsInput } from "../types/user-details-input-type";
+import { RegisterInput } from "../types/input-types/register-input";
 
 @Resolver()
 export class UserResolver {
@@ -13,7 +13,7 @@ export class UserResolver {
 
     @Mutation(() => ApiResponse)
     async register(
-        @Arg("userDetails", () => UserDetailsInput) userDetails: UserDetailsInput 
+        @Arg("userDetails", () => RegisterInput) userDetails: RegisterInput 
     ): Promise<ApiResponse> {
 
         const emailFound = await UserModel.countDocuments({ email: userDetails.email }) > 0;

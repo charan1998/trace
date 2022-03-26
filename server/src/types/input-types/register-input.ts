@@ -2,7 +2,7 @@ import { IsEmail, Length, MinLength } from "class-validator";
 import { Field, InputType } from "type-graphql";
 
 @InputType()
-export class UserDetailsInput {
+export class RegisterInput {
 
     @Field(() => String, {nullable: false})
     @IsEmail({}, {
