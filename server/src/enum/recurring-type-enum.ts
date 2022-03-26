@@ -1,5 +1,5 @@
 export enum RecurringType {
-    FIXED_PERIOD,
-    WEEKLY,
-    MONTHLY
+    FIXED = 'FIXED',
+    WEEKLY = 'WEEKLY',
+    MONTHLY = 'MONTLY'
 }

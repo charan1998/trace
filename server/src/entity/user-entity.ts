@@ -2,7 +2,7 @@ import { getModelForClass, modelOptions, pre, prop } from "@typegoose/typegoose"
 import { hash } from "bcrypt";
 import { Field, ObjectType } from "type-graphql";
 
-@pre<User>('save', async function() {
+@pre<User>("save", async function() {
     this.password = await hash(this.password, 10);
 })
 
