@@ -1,17 +1,23 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import { ApiResponse } from "../types/output-types/api-response";
 import UserModel, { User } from "../entity/user-entity";
 import { RegisterInput } from "../types/input-types/register-input";
 import { LoginInput } from "../types/input-types/login-input";
 import { compare } from "bcrypt";
 import { ResponseMessage } from "../constants/response-message";
+import { AppContext } from "../types/app-context";
+import { IsAuthenticated } from "../auth/is-authenticated";
 
 @Resolver()
 export class UserResolver {
 
-    @Query(() => [User])
-    getAllUsers(): Promise<User[]> {
-        return UserModel.find().exec();
+    @Query(() => User, { nullable: true })
+    @UseMiddleware(IsAuthenticated)
+    me(
+        @Ctx() { req }: AppContext
+    ): Promise<User | null> {
+        const userId = req.session.userId;
+        return UserModel.findById(userId).exec();
     }
 
     @Mutation(() => ApiResponse)
@@ -51,7 +57,8 @@ export class UserResolver {
 
     @Mutation(() => ApiResponse)
     async login(
-        @Arg("loginInput", () => LoginInput) { email, password }: LoginInput
+        @Arg("loginInput", () => LoginInput) { email, password }: LoginInput,
+        @Ctx() { req }: AppContext
     ): Promise<ApiResponse> {
 
         const user = await UserModel.findOne({ email }).exec();
@@ -71,6 +78,8 @@ export class UserResolver {
                 message: ResponseMessage.INVALID_LOGIN
             };
         }
+
+        req.session.userId = user.id;
 
         return {
             success: true

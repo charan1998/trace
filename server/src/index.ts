@@ -5,6 +5,9 @@ import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./resolver/user-resolver";
 import mongoose from "mongoose";
+import session from "express-session";
+import connectRedis from "connect-redis";
+import { redisClient } from "./redis/redis-client";
 
 async function initApp() {
     const port = process.env.PORT || 4000;
@@ -12,10 +15,29 @@ async function initApp() {
     const mongoPassword = process.env.MONGO_PASSWORD;
     const mongoHost = process.env.MONGO_HOST;
     const mongoPort = process.env.MONGO_PORT;
+    const sessionSecret = process.env.SESSION_SECRET!;
 
     const databaseUrl = `mongodb://${mongoHost}:${mongoPort}/trace`;
 
     const app = express();
+    app.set('trust proxy', process.env.NODE_ENV !== 'production');
+
+    const RedisStore = connectRedis(session);
+    app.use(
+        session({
+            store: new RedisStore({ client: redisClient }),
+            name: "qid",
+            saveUninitialized: false,
+            resave: false,
+            secret: sessionSecret,
+            cookie: {
+                httpOnly: true,
+                sameSite: "none",
+                secure: true,
+                maxAge: 1000 * 60 * 60 * 24 * 365 // 1 year
+            }
+        })
+    );
 
     mongoose.connect(databaseUrl, {
         authSource: 'admin',
@@ -34,11 +56,18 @@ async function initApp() {
         schema: await buildSchema({
             resolvers: [UserResolver],
             validate: true
-        })
+        }),
+        context: ({ req }: any) => ({ req })
     });
 
     await apolloServer.start();
-    apolloServer.applyMiddleware({ app });
+    apolloServer.applyMiddleware({
+        app,
+        cors: {
+            origin: "https://studio.apollographql.com",
+            credentials: true
+        }
+    });
 
     app.listen(port, () => {
         console.log(`Application listening on port ${port}`);
