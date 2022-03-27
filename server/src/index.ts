@@ -23,8 +23,11 @@ async function initApp() {
             username: mongoUserName,
             password: mongoPassword
         }
-    }).then(() => {
-        console.log('Connected to DB');
+    }, (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log("Connected to DB");
     });
 
     const apolloServer = new ApolloServer({

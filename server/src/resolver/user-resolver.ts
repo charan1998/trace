@@ -2,6 +2,9 @@ import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { ApiResponse } from "../types/output-types/api-response";
 import UserModel, { User } from "../entity/user-entity";
 import { RegisterInput } from "../types/input-types/register-input";
+import { LoginInput } from "../types/input-types/login-input";
+import { compare } from "bcrypt";
+import { ResponseMessage } from "../constants/response-message";
 
 @Resolver()
 export class UserResolver {
@@ -13,7 +16,7 @@ export class UserResolver {
 
     @Mutation(() => ApiResponse)
     async register(
-        @Arg("userDetails", () => RegisterInput) userDetails: RegisterInput 
+        @Arg("registerInput", () => RegisterInput) userDetails: RegisterInput 
     ): Promise<ApiResponse> {
 
         const emailFound = await UserModel.countDocuments({ email: userDetails.email }) > 0;
@@ -21,7 +24,7 @@ export class UserResolver {
         if (emailFound) {
             return {
                 success: false,
-                message: "E-mail ID already registered."
+                message: ResponseMessage.EMAIL_ALREADY_REGISTERED
             };
         }
 
@@ -37,7 +40,35 @@ export class UserResolver {
             console.error(err);
             return {
                 success: false,
-                message: "Error creating user."
+                message: ResponseMessage.USER_CREATION_ERROR
+            };
+        }
+
+        return {
+            success: true
+        };
+    }
+
+    @Mutation(() => ApiResponse)
+    async login(
+        @Arg("loginInput", () => LoginInput) { email, password }: LoginInput
+    ): Promise<ApiResponse> {
+
+        const user = await UserModel.findOne({ email }).exec();
+
+        if(!user) {
+            return {
+                success: false,
+                message: ResponseMessage.INVALID_LOGIN
+            };
+        }
+
+        const isPasswordCorrect = await compare(password, user.password);
+
+        if (!isPasswordCorrect) {
+            return {
+                success: false,
+                message: ResponseMessage.INVALID_LOGIN
             };
         }
 
