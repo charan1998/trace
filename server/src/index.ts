@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import session from "express-session";
 import connectRedis from "connect-redis";
 import { redisClient } from "./redis/redis-client";
+import { TaskResolver } from "./resolver/task-resolver";
 
 async function initApp() {
     const port = process.env.PORT || 4000;
@@ -54,7 +55,7 @@ async function initApp() {
 
     const apolloServer = new ApolloServer({
         schema: await buildSchema({
-            resolvers: [UserResolver],
+            resolvers: [UserResolver, TaskResolver],
             validate: true
         }),
         context: ({ req }: any) => ({ req })
