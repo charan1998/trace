@@ -2,6 +2,7 @@ export const Descriptions = {
 
     // Inputs
     GET_TASK_TASK_ID_DESCRIPTION: "ID of the task to be fetched",
+    GET_DAILY_TASKS_DATE_DESCRIPTION: "Date for which daily tasks has to be fetched",
 
     // Login Input
     LOGIN_INPUT_DESCRIPTION: "Login details for the user's account",
@@ -31,6 +32,7 @@ export const Descriptions = {
     // Queries
     ME_QUERY_DESCRIPTION: "Fetches the details of the logged in user",
     GET_TASK_QUERY_DESCRIPTION: "Fetches the details of the task",
+    GET_DAILY_TASKS_QUERY_DESCRIPTION: "Fetches the tasks for the given day",
 
     // Mutations
     REGISTER_MUTATION_DESCRIPTION: "Validates user details and adds the user to the database",
@@ -57,5 +59,12 @@ export const Descriptions = {
     TASK_DAYS_OF_THE_WEEK_DESCRIPTION: "Specifies the days of the week for which the task would repeat itself.",
     TASK_DAYS_OF_THE_MONTH_DESCRIPTION: "Specifies the days of the month for which the task would repeat itself.",
     TASK_DONE_ON_DESCRIPTION: "Specifies the days on which the task was done",
+
+    // Daily Task
+    DAILY_TASK_DESCRIPTION: "Details of a task for the day",
+    DAILY_TASK_TASK_ID_DESCRIPTION: "ID of the task",
+    DAILY_TASK_DESCRIPTION_DESCRIPTION: "Description of the task",
+    DAILY_TASK_DATE_DESCRIPTION: "Date for the task",
+    DAILY_TASK_IS_DONE_DESCRIPTION: "Specifies if the task was done on that day",
 
 } as const;

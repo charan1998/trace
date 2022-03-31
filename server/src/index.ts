@@ -9,6 +9,7 @@ import session from "express-session";
 import connectRedis from "connect-redis";
 import { redisClient } from "./redis/redis-client";
 import { TaskResolver } from "./resolver/task-resolver";
+import { DailyTaskResolver } from "./resolver/daily-task-resolvers";
 
 async function initApp() {
     const port = process.env.PORT || 4000;
@@ -55,7 +56,7 @@ async function initApp() {
 
     const apolloServer = new ApolloServer({
         schema: await buildSchema({
-            resolvers: [UserResolver, TaskResolver],
+            resolvers: [UserResolver, TaskResolver, DailyTaskResolver],
             validate: true
         }),
         context: ({ req }: any) => ({ req })
