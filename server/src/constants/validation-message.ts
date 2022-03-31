@@ -22,9 +22,9 @@ export const ValidationMessage = {
     RECURRING_TYPE_REQIRED_MESSAGE: "recurringType should be set for a recurring task",
     PERIOD_MESSAGE: "period must be a non-zero positive integer",
     PERIOD_REQUIRED_MESSAGE: "period must be set for fixed recurring type",
-    DAYS_OF_THE_WEEK_MESSAGE: "daysOfTheWeek must be an array of non-zero positive integers",
+    DAYS_OF_THE_WEEK_MESSAGE: "daysOfTheWeek must be an array of positive integers between 1 and 7 (both inclusive)",
     DAYS_OF_THE_WEEK_REQUIRED_MESSAGE: "daysOfTheWeek must be set for weekly recurring type",
-    DAYS_OF_THE_MONTH_MESSAGE: "daysOfTheMonth must be an array of non-zero positive integers",
+    DAYS_OF_THE_MONTH_MESSAGE: "daysOfTheMonth must be an array of positive integers between 1 and 31 (both inclusive)",
     DAYS_OF_THE_MONTH_REQUIRED_MESSAGE: "daysOfTheMonth must be set for monthly recurring type and should not be set otherwise",
 
 } as const;

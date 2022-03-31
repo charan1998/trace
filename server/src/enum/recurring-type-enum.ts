@@ -3,7 +3,7 @@ import { registerEnumType } from "type-graphql";
 export enum RecurringType {
     FIXED = 'FIXED',
     WEEKLY = 'WEEKLY',
-    MONTHLY = 'MONTLY'
+    MONTHLY = 'MONTHLY'
 }
 
 registerEnumType(RecurringType, {

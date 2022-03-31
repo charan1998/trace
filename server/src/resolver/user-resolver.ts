@@ -7,11 +7,15 @@ import { compare } from "bcrypt";
 import { ResponseMessage } from "../constants/response-message";
 import { AppContext } from "../types/app-context";
 import { IsAuthenticated } from "../auth/is-authenticated";
+import { Descriptions } from "../constants/descriptions";
 
 @Resolver()
 export class UserResolver {
 
-    @Query(() => User, { nullable: true })
+    @Query(() => User, {
+        nullable: true,
+        description: Descriptions.ME_QUERY_DESCRIPTION
+    })
     @UseMiddleware(IsAuthenticated)
     me(
         @Ctx() { req }: AppContext
@@ -20,7 +24,9 @@ export class UserResolver {
         return UserModel.findById(userId).exec();
     }
 
-    @Mutation(() => ApiResponse)
+    @Mutation(() => ApiResponse, {
+        description: Descriptions.REGISTER_MUTATION_DESCRIPTION
+    })
     async register(
         @Arg("registerInput", () => RegisterInput) userDetails: RegisterInput 
     ): Promise<ApiResponse> {
@@ -55,7 +61,9 @@ export class UserResolver {
         };
     }
 
-    @Mutation(() => ApiResponse)
+    @Mutation(() => ApiResponse, {
+        description: Descriptions.LOGIN_MUTATION_DESCRIPTION
+    })
     async login(
         @Arg("loginInput", () => LoginInput) { email, password }: LoginInput,
         @Ctx() { req }: AppContext
