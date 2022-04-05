@@ -10,6 +10,7 @@ import connectRedis from "connect-redis";
 import { redisClient } from "./redis/redis-client";
 import { TaskResolver } from "./resolver/task-resolver";
 import { DailyTaskResolver } from "./resolver/daily-task-resolvers";
+import { AppConstants } from "./constants/app-constants";
 
 async function initApp() {
     const port = process.env.PORT || 4000;
@@ -28,7 +29,7 @@ async function initApp() {
     app.use(
         session({
             store: new RedisStore({ client: redisClient }),
-            name: "qid",
+            name: AppConstants.SESSION_COOKIE_NAME,
             saveUninitialized: false,
             resave: false,
             secret: sessionSecret,
@@ -59,7 +60,7 @@ async function initApp() {
             resolvers: [UserResolver, TaskResolver, DailyTaskResolver],
             validate: true
         }),
-        context: ({ req }: any) => ({ req })
+        context: ({ req, res }: any) => ({ req, res })
     });
 
     await apolloServer.start();

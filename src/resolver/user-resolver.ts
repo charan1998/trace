@@ -8,6 +8,7 @@ import { ResponseMessage } from "../constants/response-message";
 import { AppContext } from "../types/app-context";
 import { IsAuthenticated } from "../auth/is-authenticated";
 import { Descriptions } from "../constants/descriptions";
+import { AppConstants } from "../constants/app-constants";
 
 @Resolver()
 export class UserResolver {
@@ -92,5 +93,30 @@ export class UserResolver {
         return {
             success: true
         };
+    }
+
+    @Mutation(() => ApiResponse, {
+        description: Descriptions.LOGOUT_MUTATION_DESCRIPTION
+    })
+    @UseMiddleware(IsAuthenticated)
+    async logout(
+        @Ctx() { req, res }: AppContext
+    ):Promise<ApiResponse> {
+        
+        return new Promise<ApiResponse>((resolve, reject) => {
+            req.session.destroy((err) => {
+                if (err) {
+                    console.log(err);
+                    reject({ success: false, message: ResponseMessage.LOGOUT_ERROR });
+                }
+
+                res.clearCookie(AppConstants.SESSION_COOKIE_NAME, {
+                    httpOnly: true,
+                    sameSite: "none",
+                    secure: true
+                });
+                resolve({ success: true });
+            });
+        });
     }
 }

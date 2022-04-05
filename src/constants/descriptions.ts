@@ -38,6 +38,7 @@ export const Descriptions = {
     REGISTER_MUTATION_DESCRIPTION: "Validates user details and adds the user to the database",
     LOGIN_MUTATION_DESCRIPTION: "Validates login details and creates a session for the user",
     ADD_TASK_MUTATION_DESCRIPTION: "Validates task details and adds the task to the database",
+    LOGOUT_MUTATION_DESCRIPTION: "Clears the session and cookie",
 
     // User
     USER_DESCRIPTION: "Details of a user",

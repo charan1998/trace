@@ -4,5 +4,6 @@ export const ResponseMessage = {
     USER_CREATION_ERROR: "Error creating user.",
     NOT_AUTHENTICATED: "User not authenticated.",
     TASK_CREATION_ERROR: "Error creating task.",
-    TASK_INPUT_INVALID_ERROR: "Invalid task input provided."
+    TASK_INPUT_INVALID_ERROR: "Invalid task input provided.",
+    LOGOUT_ERROR: "Error logging out user"
 } as const;
